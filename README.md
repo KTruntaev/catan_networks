@@ -1,0 +1,2 @@
+# Optimal Starting Location in _Settlers of Catan_
+This project explores the applications of Network Science to analyzing Catan, in particular, finding the optimal draft order based on the relative settlement location values.
