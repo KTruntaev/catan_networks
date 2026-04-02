@@ -11,8 +11,9 @@ class Agent (ABC):
     """
     Agent base class
     """
-    def __init__(self, id: int):
+    def __init__(self, id: int, debug=False):
         self.id = id
+        self.debug = debug
 
     @abstractmethod
     def act(self, network: Graph) -> list[Action]:
@@ -31,4 +32,5 @@ class Agent (ABC):
         pass
 
     def debug_print(self, input: str):
-        print(f"[{self.id}]: {input}")
+        if self.debug:
+            print(f"[{self.id}]: {input}")

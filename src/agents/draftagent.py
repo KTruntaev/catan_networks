@@ -7,7 +7,7 @@ from utils.action import Action, PlaceSettlement, PlaceRoad, SimResponse
 
 
 class DraftAgent(Agent):
-    def __init__(self, id: int = random.randint(1,777)):
+    def __init__(self, id: int = random.randint(1,777), debug=False):
         super().__init__(id=id)
         self.settlements: set[int] = set()
         self.roads: set[tuple[int,int]] = set()
