@@ -178,11 +178,13 @@ def generate_catan_board(size=1.0):
         G.add_node(new_idx, pos=(x, y), hex_indices=raw_hex_map[old_idx])
         # NOTE: extension for the simulation
         G.nodes[new_idx]["owner"] = -1
+        G.nodes[new_idx]["turn"] = -1
 
     for oi, oj in raw_edges:
         G.add_edge(old_to_new[oi], old_to_new[oj])
         # NOTE: extension for the simulation
         G[old_to_new[oi]][old_to_new[oj]]["owner"] = -1
+        G[old_to_new[oi]][old_to_new[oj]]["turn"] = -1
         # print(G[old_to_new[oi]][old_to_new[oj]])
 
     return G, hex_centers

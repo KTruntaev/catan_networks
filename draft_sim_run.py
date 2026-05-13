@@ -16,13 +16,13 @@ if __name__ == "__main__":
     print("Hello Cat-An!")
     # obs_hist: dict[str, list[float]] = {}
     obs_hist: dict[int, dict[str, list[float]]] = {agent_idx: defaultdict(list[float]) for agent_idx in [0,1,2,3]}
-    for trial in tqdm(range(10000)):
+    for trial in tqdm(range(1)):
         sim = DraftSimulator()
         for i in range(8):
             sim.step()
             # sim.render(title=f"After turn #{i+1}")
-        # sim.render(title=f"After draft")
-        # plt.show()
+        sim.render(title=f"After draft")
+        plt.show()
         obs = sim.analyze()
         for agent_k, vals in obs.items():
             for val_k, val_val in vals.items():

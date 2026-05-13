@@ -19,6 +19,7 @@ class DraftSimulator():
                 self.agents[i] = DraftAgent(i, debug=self.debug)
 
         self.curr_agent_idx = 0
+        self.turn = 0
         self.dir = 1
 
         self.network, self.hex_centers, self.tile_data = generate_beginner_board_graph()
@@ -29,12 +30,22 @@ class DraftSimulator():
         match action:
             case PlaceSettlement(node=n):
                 if self.network.nodes[n]["owner"] == -1:
+                    # check the 1 road away rule
+                    for neigh_idx in self.network.neighbors(n):
+                        if self.network.nodes[neigh_idx]["owner"] != -1:
+                            return SimResponse(action=action, ack=False)
+
                     self.network.nodes[n]["owner"] = agent.id
+                    self.network.nodes[n]["turn"] = self.turn
                     return SimResponse(action=action, ack=True)
                 else:
                     return SimResponse(action=action, ack=False)
             case PlaceRoad(edge=e):
                 if self.network.edges[e]["owner"] == -1:
+                    if (not ((self.network.nodes[e[0]]["owner"] == agent.id and self.network.nodes[e[0]]["turn"] == self.turn)
+                        or (self.network.nodes[e[1]]["owner"] == agent.id and self.network.nodes[e[1]]["turn"] == self.turn))):
+                        return SimResponse(action=action, ack=False)
+
                     self.network.edges[e]["owner"] = agent.id
                     return SimResponse(action=action, ack=True)
                 else:
@@ -54,6 +65,7 @@ class DraftSimulator():
                 responses.append(self.execute_action(agent = curr_agent, action = a_act))
             curr_agent.observe(network=self.network, responses=responses)
 
+        self.turn += 1
         # 1 2 3 4 4 3 2 1
         self.curr_agent_idx += self.dir
         if self.curr_agent_idx == self.num_agents:
