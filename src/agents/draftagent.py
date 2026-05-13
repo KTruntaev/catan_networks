@@ -8,10 +8,9 @@ from utils.action import Action, PlaceSettlement, PlaceRoad, SimResponse
 
 class DraftAgent(Agent):
     def __init__(self, id: int = random.randint(1,777), debug=False):
-        super().__init__(id=id)
+        super().__init__(id=id, debug=debug)
         self.settlements: set[int] = set()
         self.roads: set[tuple[int,int]] = set()
-
 
     def act(self, network: Graph) -> list[Action]:
         node, edge = None, None
@@ -41,3 +40,19 @@ class DraftAgent(Agent):
                         self.roads.add(e)
 
 
+class DeterministicAgent(Agent):
+    def __init__(self, id: int = random.randint(1, 777), debug=False, moves: list[Action] = []):
+        # pass
+        super().__init__(id=id, debug=debug)
+        self.moves = moves
+        self.curr_move_i = 0
+
+    def act(self, network: Graph) -> list[Action]:
+        if self.curr_move_i >= len(self.moves):
+            raise IndexError (f"agent {self.id} has run out of moves")
+        move = self.moves[self.curr_move_i]
+        self.curr_move_i += 1
+        return [move]
+
+    def observe(self, network: Graph, responses: list[SimResponse]):
+        pass

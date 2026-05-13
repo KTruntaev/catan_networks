@@ -1,10 +1,8 @@
 import random
 from abc import ABC, abstractmethod
-from argparse import Action
-
 from networkx.classes.graph import Graph
 
-from utils.action import SimResponse
+from utils.action import SimResponse, Action
 
 
 class Agent (ABC):

@@ -10,11 +10,14 @@ from catan_nets.network import generate_beginner_board_graph
 from catan_nets.visualization import draw_game_state
 
 class DraftSimulator():
-    def __init__(self, debug=False):
+    def __init__(self, debug=False, agents: dict[int, Agent] = None, num_agents: int = 4):
         self.debug = debug
-        self.agents: dict[int, Agent] = {}
-        for i in range(4):
-            self.agents[i] = DraftAgent(i, debug=self.debug)
+        self.num_agents = num_agents
+        if agents is None:
+            self.agents: dict[int, Agent] = {}
+            for i in range(self.num_agents):
+                self.agents[i] = DraftAgent(i, debug=self.debug)
+
         self.curr_agent_idx = 0
         self.dir = 1
 
@@ -53,7 +56,7 @@ class DraftSimulator():
 
         # 1 2 3 4 4 3 2 1
         self.curr_agent_idx += self.dir
-        if self.curr_agent_idx == 4:
+        if self.curr_agent_idx == self.num_agents:
             self.dir *= -1
             self.curr_agent_idx = 3
 
