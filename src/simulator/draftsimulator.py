@@ -31,9 +31,8 @@ class DraftSimulator():
             case PlaceSettlement(node=n):
                 if self.network.nodes[n]["owner"] == -1:
                     # check the 1 road away rule
-                    for neigh_idx in self.network.neighbors(n):
-                        if self.network.nodes[neigh_idx]["owner"] != -1:
-                            return SimResponse(action=action, ack=False)
+                    if any([self.network.nodes[neigh_idx]["owner"] != -1 for neigh_idx in self.network.neighbors(n)]):
+                        return SimResponse(action=action, ack=False)
 
                     self.network.nodes[n]["owner"] = agent.id
                     self.network.nodes[n]["turn"] = self.turn
@@ -47,6 +46,7 @@ class DraftSimulator():
                         return SimResponse(action=action, ack=False)
 
                     self.network.edges[e]["owner"] = agent.id
+                    self.network.edges[e]["turn"] = self.turn
                     return SimResponse(action=action, ack=True)
                 else:
                     return SimResponse(action=action, ack=False)
@@ -63,6 +63,7 @@ class DraftSimulator():
             responses: list[SimResponse] = []
             for a_act in agent_acts:
                 responses.append(self.execute_action(agent = curr_agent, action = a_act))
+                self.debug_print(f"response: {responses[-1]} to agent's {a_act}")
             curr_agent.observe(network=self.network, responses=responses)
 
         self.turn += 1
