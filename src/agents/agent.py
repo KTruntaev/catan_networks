@@ -2,6 +2,7 @@ import random
 from abc import ABC, abstractmethod
 from networkx.classes.graph import Graph
 
+from catan_nets.state import BoardState
 from utils.action import SimResponse, Action
 
 
@@ -14,7 +15,7 @@ class Agent (ABC):
         self.debug = debug
 
     @abstractmethod
-    def act(self, network: Graph) -> list[Action]:
+    def act(self, bstate: BoardState) -> list[Action]:
         """
         agent emits actions for the sim
 

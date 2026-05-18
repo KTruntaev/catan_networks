@@ -3,26 +3,28 @@ import random
 from networkx.classes.graph import Graph
 
 from agents.agent import Agent
+from catan_nets.network import is_node_settleable, is_edge_roadable_draft
+from catan_nets.state import BoardState
 from utils.action import Action, PlaceSettlement, PlaceRoad, SimResponse
 
-
-class DraftAgent(Agent):
+class RandomAgent(Agent):
     def __init__(self, id: int = random.randint(1,777), debug=False):
         super().__init__(id=id, debug=debug)
         self.settlements: set[int] = set()
         self.roads: set[tuple[int,int]] = set()
 
-    def act(self, network: Graph) -> list[Action]:
+    def act(self, bstate: BoardState) -> list[Action]:
+        self.debug_print(bstate.network)
+        network = bstate.network
+        turn = bstate.turn
+
         node, edge = None, None
         # this sample draft agent simply randomly picks a node + edge to place
         while True:
             rand_node_idx = random.randint(0, network.number_of_nodes()-1)
-            if network.nodes[rand_node_idx]["owner"] != -1:
-                continue
 
-            # check the 1 road away rule
-            self.debug_print(f"I am trying {rand_node_idx}, its neighs are {list(network.neighbors(rand_node_idx))}")
-            if any([network.nodes[neigh_idx]["owner"] != -1 for neigh_idx in network.neighbors(rand_node_idx)]):
+            # find a settleable node
+            if not is_node_settleable(network, rand_node_idx):
                 continue
 
             # pick from incident edges
